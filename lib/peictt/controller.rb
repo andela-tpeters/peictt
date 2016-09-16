@@ -33,7 +33,7 @@ module Peictt
 
 
     def render_template(template)
-      return Haml::Engine.new(template.body).render(self, template.locals) if template.html?
+      return Haml::Engine.new(template.body).render(self, template.locals) if template.html? || template.text?
       return Parser::JSON.new(template.body).render(self, template.locals) if template.json?
     end
 

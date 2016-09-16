@@ -30,15 +30,26 @@ module Peictt
         @headers.merge! headers
       end
 
-      def process_args
-        args.shift if args.size > 1
-        status args[0][:status] if args[0][:status]
-        args[0].keys.each do |key|
+      def process_options(options)
+        (status(options[:status]) if options[:status]) || status
+        options.keys.each do |key|
           if MODIFIERS.include?(key) && key != :headers
             self.send(key)
           elsif MODIFIERS.include?(key) && key == :headers
-            add_headers args[0][:headers]
+            add_headers options[:headers]
           end
+        end
+      end
+
+      def process_args
+        if (args.size > 1) && (args[1].is_a? Hash)
+          process_options args[1]
+        elsif (args.size == 1) && (args[0].is_a? Hash)
+          process_options args[0]
+        elsif (args.size == 1) && ((args[0].is_a? String) || (args[0].is_a? Symbol))
+          status
+        elsif (args.size > 1) && (!args[1].is_a? Hash)
+          raise "First for render argument must be a view name as a Symbol or string; Second argument for render must be type Hash"
         end
       end
     end

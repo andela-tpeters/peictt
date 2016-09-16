@@ -8,40 +8,56 @@ module Peictt
         @arg = args
         @action = action
         @controller = controller_name
-        get_format arg.dup
-        get_locals
-        build_body
+        process_args arg.dup
         raise "Template view not found" unless @body
       end
 
-      def get_format(arg)
-        arg.shift if arg.size > 1
-        format = arg[0].keys.select! { |key| FORMAT.include? key }
+      def process_args(arg)
+        if (arg.size > 1) && (arg[1].is_a? Hash)
+
+          get_format arg[1].keys
+          build_body arg[0], arg[1]
+          get_locals arg[1]
+
+        elsif (arg.size == 1) && (arg[0].is_a? Hash)
+
+          get_format arg[0].keys
+          build_body @action, arg[0]
+          get_locals arg[0]
+
+        elsif (arg.size == 1) && (!arg[0].is_a? Hash)
+
+          @format = :html
+          build_body @action
+          get_locals
+
+        else
+          raise "First for render argument must be a view name as a Symbol or string; Second argument for render must be type Hash"
+        end
+      end
+
+      def get_format(keys)
+        format = keys.select! { |key| FORMAT.include? key }
         raise "2 application types given...expected 1" if format.size > 1
         @format = (format[0] unless format.empty?) || :html
       end
 
-      def get_locals
-        if arg.size > 1
-          @locals = arg[1][:locals] || {}
-          @locals.merge! arg[1][:json] if json?
+      def get_locals(options = {})
+        @locals = options[:locals] || {}
+        @locals.merge! options[:json] if json?
+      end
+
+      def build_body(view_name, options = {})
+        if options[:controller].nil?
+          template_from_view(view_name)
+        elsif options[:controller]
+          template_from_controller(view_name, options[:controller])
         else
-          @locals = arg[0][:locals] || {}
-          @locals.merge! arg[0][:json] if json?
+          build_template_from_parts(options)
         end
       end
 
-      def build_body
-        if arg && arg.size > 1 && arg[1][:controller].nil?
-          template_from_view(arg.dup.shift.to_s)
-        elsif arg && arg.size > 1 && arg[1][:controller]
-          template_from_controller(arg.dup.shift.to_s, arg[1][:controller])
-        else
-          build_template(arg[0])
-        end
-      end
-
-      def build_template(parts)
+      def build_template_from_parts(parts)
         if parts[:controller]
           template_from_controller @action, parts[:controller]
         end
@@ -57,7 +73,7 @@ module Peictt
       end
 
       def filename(name, controller_name)
-        (File.join("app","views", controller_name, "#{name}.haml") if html?) ||
+        (File.join("app","views", controller_name, "#{name}.haml") if html? || text?) ||
         (File.join("app","views", controller_name, "#{name}.json.peictt") if json?)
       end
 
@@ -67,6 +83,10 @@ module Peictt
 
       def json?
         @format == :json
+      end
+
+      def text?
+        @format == :text
       end
     end
   end
