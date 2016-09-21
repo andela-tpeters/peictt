@@ -1,5 +1,5 @@
-require "thor"
-require "pry"
+require 'thor'
+require 'pry'
 require "peictt/utils"
 
 module Generators
@@ -60,9 +60,9 @@ module Generators
     private
 
     def controller(name)
-      if File.exist?("config.ru")
+      if File.exists?("config.ru")
         template "controller_template.rb",
-                 "app/controllers/#{name.to_snake_case}.rb"
+          "app/controllers/#{name.to_snake_case}.rb"
       else
         say "Can't find the config.ru file"
       end
