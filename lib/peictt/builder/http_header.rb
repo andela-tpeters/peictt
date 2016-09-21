@@ -49,7 +49,8 @@ module Peictt
         elsif (args.size == 1) && ((args[0].is_a? String) || (args[0].is_a? Symbol))
           status
         elsif (args.size > 1) && (!args[1].is_a? Hash)
-          raise "First for render argument must be a view name as a Symbol or string; Second argument for render must be type Hash"
+          raise "First for render argument must be a view name as a Symbol or\
+            string; Second argument for render must be type Hash"
         end
       end
     end

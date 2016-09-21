@@ -22,19 +22,33 @@ require "peictt/parser/json"
 
 module Peictt
   class Application
+
     def call(env)
       if env["PATH_INFO"] == "/favicon.ico"
         return [ 500, {}, [] ]
       end
+      @@request = Rack::Request.new(env)
       get_rack_app(env).call(env)
     end
 
-    def routes
+    def self.config(&block)
+      binding.pry
+    end
+
+    def self.params
+      @@request.params
+    end
+
+    def self.session
+      @@request.session
+    end
+
+    def self.routes
       @route_builder ||= Peictt::Builder::Router.new
     end
 
     def get_rack_app(env)
-      Peictt::Http::Checker.check_url(env, @route_builder.routes)
+      Peictt::Http::Checker.check_url(env, self.class.routes.all)
     end
   end
 end
