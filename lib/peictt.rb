@@ -3,7 +3,10 @@ require "pry"
 require "haml"
 require "puma"
 require "json"
+<<<<<<< 1caf55363536f16d7be7286789841ef9f8729231
 require "active_support/inflector"
+=======
+>>>>>>> ft base model
 require "peictt/controller"
 require "peictt/utils"
 require "peictt/builder/http_header"
