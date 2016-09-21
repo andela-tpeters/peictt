@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "peictt"
+
+require_relative File.join(__dir__, "..", "generators", "generator")
+
+Generators::Generator.start ARGV
