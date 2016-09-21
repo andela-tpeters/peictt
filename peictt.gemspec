@@ -36,6 +36,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "haml"
   spec.add_runtime_dependency "require_all"
   spec.add_runtime_dependency "json"
-  spec.add_runtime_dependency "jsonify"
+  spec.add_runtime_dependency "sqlite3"
 
 end
