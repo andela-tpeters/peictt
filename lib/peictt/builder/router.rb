@@ -1,6 +1,5 @@
 module Peictt::Builder
   class Router
-    attr_reader :routes
 
     def initialize
       @routes = []
@@ -9,6 +8,10 @@ module Peictt::Builder
 
     def draw(&block)
       instance_eval(&block)
+    end
+
+    def all
+      @routes
     end
 
     def method_missing(name, url, args = {})

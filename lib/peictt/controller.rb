@@ -1,16 +1,11 @@
-require 'haml'
+require 'tilt/haml'
 
 module Peictt
-  class Controller < Peictt::Session
+  class Controller
     attr_reader :request
 
-    def initialize(env)
-      @env = env
-      @request = Rack::Request.new(env)
-    end
-
     def redirect_to(url)
-      response([], 302, "Location"=>url)
+      response([], 301, "Location" => url)
     end
 
     def response(body, status = 200, headers = {})
@@ -22,7 +17,11 @@ module Peictt
     end
 
     def params
-      request.params
+      Peictt::Application.params
+    end
+
+    def session
+      Peictt::Application.session
     end
 
     def render(*args)
@@ -33,8 +32,21 @@ module Peictt
 
 
     def render_template(template)
-      return Haml::Engine.new(template.body).render(self, template.locals) if template.html? || template.text?
-      return Parser::JSON.new(template.body).render(self, template.locals) if template.json?
+      if template.html? || template.text?
+        render_html(template)
+      else
+        return render_json(template)
+      end
+    end
+
+    def render_html(template)
+      @@layout.render(self, template.locals) do
+        Tilt::HamlTemplate.new(template.body).render(self, template.locals)
+      end
+    end
+
+    def render_json(template)
+      return Parser::JSON.new(template.body).render(self, template.locals)
     end
 
     def controller_name
@@ -53,7 +65,14 @@ module Peictt
     end
 
     def self.action(action_name)
-      -> (env) { self.new(env).dispatch(action_name) }
+      -> (env) { self.new.dispatch(action_name) }
+    end
+
+    def self.layout(layout_name = nil)
+      default = "application"
+      view_name = layout_name || default
+      file = File.join("app","views","layouts","#{view_name}.haml")
+      @@layout = Tilt::HamlTemplate.new(file)
     end
   end
 end

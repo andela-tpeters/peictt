@@ -64,12 +64,12 @@ module Peictt
       end
 
       def template_from_view(name)
-        @body = File.read(filename(name, @controller))
+        @body = filename(name, @controller)
       end
 
 
       def template_from_controller(name, controller_name)
-        @body = File.read(filename(name, controller_name))
+        @body = filename(name, controller_name)
       end
 
       def filename(name, controller_name)
