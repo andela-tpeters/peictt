@@ -16,6 +16,8 @@ require "peictt/http/put"
 require "peictt/http/patch"
 require "peictt/http/match"
 require "peictt/parser/json"
+require "peictt/orm/database"
+require "peictt/orm/base_model"
 
 module Peictt
   class Application
