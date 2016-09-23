@@ -1,6 +1,7 @@
 require 'thor'
 require 'pry'
 require "peictt/utils"
+require "pathname"
 
 module Generators
   class Generator < Thor
@@ -28,7 +29,7 @@ module Generators
       File.dirname(__FILE__) + "/templates"
     end
 
-    desc "new", "this generates a new peictt app"
+    desc "new", "generates a new app"
 
     def new(name)
       @app = name.downcase
@@ -57,12 +58,70 @@ module Generators
     desc "s", "alias for server"
     alias s server
 
+    desc "migrate", "Run migations"
+    def migrate
+      files = process_migration_files
+      say("You have no migrations") && return if files.empty?
+
+      files.each do |file|
+        say "===========Migrating #{file[:name]}"
+        file[:class].new.change
+        say "===========Migrated #{file[:name]}"
+        puts
+      end unless files.empty?
+
+      say "******Db Migrations Completed******"
+      puts
+    end
+
+    desc "reset_migration", "Resets all migrations"
+    def drop_tables
+      files = process_migration_files
+      say("You have no migrations") && return if files.empty?
+
+      files.each do |file|
+        say "===========Processing Table drop for #{file[:name]}"
+        file[:class].new.down
+        say "===========Table drop for #{file[:name]} completed"
+        puts
+      end unless files.empty?
+
+      say "******Db Reset Completed******"
+      puts
+    end
+
+    desc "reset_db", "Drops tables and makes a new migration"
+    def reset_db
+      drop_tables
+      migrate
+    end
+
     private
+
+    def process_migration_files
+      Dir[File.join(APP_ROOT, "db", "migrations", "*.rb")].map do |file|
+        require file
+        filename = Pathname.new(file).basename.to_s.sub! /.rb/, ''
+        klass = Object.const_get filename.to_camel_case
+        { name: filename, class: klass }
+      end
+    end
+
+    def migration(name)
+      if File.exists?("config.ru")
+        template "migration_template.rb",
+          "#{APP_ROOT}/db/migrations/#{name.to_snake_case.pluralize}.rb",
+          {name: name}
+      else
+        say "Can't find the config.ru file"
+      end
+    end
 
     def controller(name)
       if File.exists?("config.ru")
         template "controller_template.rb",
-          "app/controllers/#{name.to_snake_case}.rb"
+          "#{APP_ROOT}/app/controllers/#{name.to_snake_case}.rb",
+          { name: name }
       else
         say "Can't find the config.ru file"
       end

@@ -3,6 +3,7 @@ require "pry"
 require "haml"
 require "puma"
 require "json"
+require "active_support/inflector"
 require "peictt/controller"
 require "peictt/utils"
 require "peictt/builder/http_header"
@@ -32,7 +33,8 @@ module Peictt
       get_rack_app(env).call(env)
     end
 
-    def self.config
+    def self.config(&block)
+      # binding.pry
     end
 
     def self.params
