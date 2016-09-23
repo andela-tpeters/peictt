@@ -18,6 +18,8 @@ require "peictt/http/match"
 require "peictt/parser/json"
 require "peictt/orm/database"
 require "peictt/orm/base_model"
+require "peictt/orm/migrations"
+require "peictt/orm/constraints_parser"
 
 module Peictt
   class Application

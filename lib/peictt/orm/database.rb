@@ -6,6 +6,7 @@ module Peictt
     end
 
     def self.execute_query(*query)
+      binding.pry
       connect.execute(*query)
     end
   end
