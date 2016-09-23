@@ -9,5 +9,4 @@ APP_ROOT = File.expand_path "."
 
 require_relative File.join(gem_dir, "generators", "generator")
 
-
 Generators::Generator.start ARGV

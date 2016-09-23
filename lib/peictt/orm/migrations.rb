@@ -5,7 +5,7 @@ module Peictt
       @column_type = type.to_s.upcase
       @options = args[1] if args[1].is_a? Hash
       table_properties << "#{@column_name} #{@column_type} "\
-      "#{parse_options(@options.dup).join(' ')}"
+      "#{parse_options(@options.dup).join(" ")}"
       @options = {}
     end
 
