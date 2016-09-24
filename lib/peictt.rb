@@ -21,6 +21,7 @@ require "peictt/orm/database"
 require "peictt/orm/base_model"
 require "peictt/orm/migrations"
 require "peictt/orm/constraints_parser"
+require "peictt/orm/database_mapper"
 
 module Peictt
   class Application

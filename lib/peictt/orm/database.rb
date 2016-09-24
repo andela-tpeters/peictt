@@ -6,7 +6,7 @@ module Peictt
     end
 
     def self.execute_query(*query)
-      connect.execute(*query)
+      connect.execute(query[0], query[1] || [])
     end
   end
 end
