@@ -14,20 +14,17 @@ module Peictt
     end
 
     def self.set_methods
-      columns = Database.connect.table_info(self.class.table).map do |column|
-        column["name"]
-      end
       make_methods columns
+    end
+
+    def self.columns
+      Database.connect.table_info(@@table_name).
+        map { |column| column['name'] }
     end
 
     def self.make_methods(columns)
       columns.each do |column|
-        attr_accessor column.to_sym unless columns == "created_at" || "updated_at"
-        if (column == "created_at") || (column == "updated_at")
-          attr_reader column.to_sym
-        else
-          attr_accessor column.to_sym
-        end
+        attr_accessor column.to_sym
       end
     end
 
@@ -46,18 +43,26 @@ module Peictt
     end
 
     def self.create(attributes)
-
+      model = self.new(attributes)
+      model.save
+      model
     end
 
     def update(attributes)
       attributes.each do |key, value|
+        send("#{key}=", values)
       end
+      self
     end
 
-    def self.find_by(attributes = {})
+    def self.find_by(attributes)
+      @@table_name = self.to_s.downcase.pluralize
+      result = DatabaseMapper.find_by self, attributes
+      key_pair = columns.zip(result).to_h
+      self.new key_pair
     end
 
-    def self.where()
+    def self.where(search_params)
     end
   end
 end
