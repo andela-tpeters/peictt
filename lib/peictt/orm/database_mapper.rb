@@ -116,7 +116,8 @@ module Peictt
     end
 
     def self.find_query
-      "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')} LIMIT 1"
+      "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')}"\
+      "LIMIT 1"
     end
   end
 end
