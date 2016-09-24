@@ -104,6 +104,7 @@ module Peictt
 
     def self.destroy_all_query
       "DELETE FROM #{@table_name}"
+      
     end
   end
 end

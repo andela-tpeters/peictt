@@ -24,7 +24,12 @@ module Peictt
 
     def self.make_methods(columns)
       columns.each do |column|
-        attr_accessor column.to_sym
+        attr_accessor column.to_sym unless columns == "created_at" || "updated_at"
+        if (column == "created_at") || (column == "updated_at")
+          attr_reader column.to_sym
+        else
+          attr_accessor column.to_sym
+        end
       end
     end
 
