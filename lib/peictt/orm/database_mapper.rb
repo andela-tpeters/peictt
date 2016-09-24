@@ -104,7 +104,19 @@ module Peictt
 
     def self.destroy_all_query
       "DELETE FROM #{@table_name}"
-      
+
+    end
+
+    def self.find_by(model, attributes)
+      @table_name = model.to_s.downcase.pluralize
+      @q_holders, @columns = columns attributes.keys
+      @values = attributes.values
+      @combined_array = @columns.zip(@q_holders).map { |item| item.join " = " }
+      Database.execute_query(find_query, @values)[0]
+    end
+
+    def self.find_query
+      "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')} LIMIT 1"
     end
   end
 end
