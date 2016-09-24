@@ -52,6 +52,7 @@ module Peictt
       attributes.each do |key, value|
         send("#{key}=", values)
       end
+      self.updated_at = Time.now.to_s
       self
     end
 

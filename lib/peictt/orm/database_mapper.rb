@@ -6,7 +6,7 @@ module Peictt
       @action = action
       @variables = model.instance_variables
       set_columns_and_values
-      add_timestamps
+      add_timestamps if create?
       self
     end
 
@@ -33,7 +33,15 @@ module Peictt
     end
 
     def build_update_query
-
+      update_columns = @columns[1..-1]
+      id = @values.shift
+      columns_and_q_holders = update_columns.zip(@q_holders[1..-1]).
+        map do |pair|
+          pair.join " = "
+        end
+      @values << id
+      "UPDATE #{@table_name} SET #{columns_and_q_holders.join(", ")} "\
+      "WHERE id = ?"
     end
 
     def set_columns_and_values
@@ -57,11 +65,11 @@ module Peictt
     end
 
     def add_timestamps
-      @q_holders << "?" if create?
       @q_holders << "?"
-      @columns << "created_at" if create?
+      @q_holders << "?"
+      @columns << "created_at"
       @columns << "updated_at"
-      @values << Time.now.to_s if create?
+      @values << Time.now.to_s
       @values << Time.now.to_s
     end
 
@@ -74,7 +82,8 @@ module Peictt
     end
 
     def self.find_query
-      "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')} LIMIT 1"
+      "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')}"\
+      "LIMIT 1"
     end
   end
 end
