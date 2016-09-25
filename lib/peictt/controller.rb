@@ -1,4 +1,4 @@
-require 'haml'
+require "haml"
 
 module Peictt
   class Controller < Peictt::Session
@@ -10,7 +10,7 @@ module Peictt
     end
 
     def redirect_to(url)
-      response([], 302, "Location"=>url)
+      response([], 302, "Location" => url)
     end
 
     def response(body, status = 200, headers = {})
@@ -31,19 +31,20 @@ module Peictt
       response(render_template(template), headers.status, headers.headers)
     end
 
-
     def render_template(template)
-      return Haml::Engine.new(template.body).render(self, template.locals) if template.html?
-      return Parser::JSON.new(template.body).render(self, template.locals) if template.json?
+      return Haml::Engine.new(template.body).render(self, template.locals) if
+        template.html?
+      return Parser::JSON.new(template.body).render(self, template.locals) if
+        template.json?
     end
 
     def controller_name
-      self.class.to_s.gsub(/Controller$/,"").to_snake_case
+      self.class.to_s.gsub(/Controller$/, "").to_snake_case
     end
 
     def dispatch(action)
       @action = action
-      content = self.send(action)
+      send(action)
       if get_response
         get_response
       else
@@ -53,7 +54,7 @@ module Peictt
     end
 
     def self.action(action_name)
-      -> (env) { self.new(env).dispatch(action_name) }
+      -> (env) { new(env).dispatch(action_name) }
     end
   end
 end

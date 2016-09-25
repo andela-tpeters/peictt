@@ -2,11 +2,12 @@ module Peictt
   module Builder
     class HttpHeader
       attr_reader :status, :args
-      MODIFIERS = [:text, :json, :headers, :status]
+      attr_writer :status
+      MODIFIERS = [:text, :json, :headers, :status].freeze
 
       def initialize(arg)
         @args = arg
-        @headers = { "Content-Type"=>"text/html" }
+        @headers = { "Content-Type" => "text/html" }
         process_args
       end
 
@@ -22,9 +23,7 @@ module Peictt
         @status = status
       end
 
-      def headers
-        @headers
-      end
+      attr_reader :headers
 
       def add_headers(headers)
         @headers.merge! headers
@@ -35,7 +34,7 @@ module Peictt
         status args[0][:status] if args[0][:status]
         args[0].keys.each do |key|
           if MODIFIERS.include?(key) && key != :headers
-            self.send(key)
+            send(key)
           elsif MODIFIERS.include?(key) && key == :headers
             add_headers args[0][:headers]
           end

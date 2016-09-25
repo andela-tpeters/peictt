@@ -2,7 +2,7 @@ module Peictt
   module Builder
     class Template
       attr_reader :body, :arg, :locals, :action, :format
-      FORMAT = [:json, :text]
+      FORMAT = [:json, :text].freeze
 
       def initialize(args, controller_name, action)
         @arg = args
@@ -51,14 +51,26 @@ module Peictt
         @body = File.read(filename(name, @controller))
       end
 
-
       def template_from_controller(name, controller_name)
         @body = File.read(filename(name, controller_name))
       end
 
       def filename(name, controller_name)
-        (File.join("app","views", controller_name, "#{name}.haml") if html?) ||
-        (File.join("app","views", controller_name, "#{name}.json.peictt") if json?)
+        if html?
+          return File.join(
+            "app",
+            "views",
+            controller_name,
+            "#{name}.haml"
+          )
+        elsif json?
+          return File.join(
+            "app",
+            "views",
+            controller_name,
+            "#{name}.json.peictt"
+          )
+        end
       end
 
       def html?
