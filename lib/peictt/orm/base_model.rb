@@ -60,6 +60,8 @@ module Peictt
       @@table_name = self.to_s.downcase.pluralize
       result = DatabaseMapper.find_by self, attributes
       key_pair = columns.zip(result).to_h
+      key_pair["created_at"] = key_pair["created_at"].to_time
+      key_pair["updated_at"] = key_pair["updated_at"].to_time
       self.new key_pair
     end
 
