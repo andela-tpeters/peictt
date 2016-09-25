@@ -45,7 +45,7 @@ module Peictt
     def self.create(attributes)
       model = self.new(attributes)
       model.save
-      model
+      find_by title: model.title
     end
 
     def update(attributes)
@@ -61,11 +61,9 @@ module Peictt
       result = DatabaseMapper.find_by self, attributes
       return result if result.nil?
       key_pair = columns.zip(result).to_h
-      key_pair["created_at"] = key_pair["created_at"].to_time unless
-        key_pair["created_at"].nil?
-      key_pair["updated_at"] = key_pair["updated_at"].to_time unless
-        key_pair["updated_at"].nil?
-      self.new key_pair
+      item = self.new key_pair
+      parse_to_time item
+      item
     end
 
     def destroy
@@ -74,6 +72,11 @@ module Peictt
 
     def self.destroy_all
       DatabaseMapper.destroy_all self.to_s.to_snake_case.pluralize
+    end
+
+    def self.parse_to_time(model)
+      model.created_at = model.created_at.to_time unless model.created_at.nil?
+      model.updated_at = model.updated_at.to_time unless model.updated_at.nil?
     end
 
     def self.where(search_params)
