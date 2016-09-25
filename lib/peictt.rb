@@ -4,10 +4,8 @@ require "haml"
 require "puma"
 require "json"
 require "jsonify"
-require "peictt/session"
 require "peictt/controller"
 require "peictt/utils"
-require "peictt/config/puma"
 require "peictt/builder/http_header"
 require "peictt/builder/template"
 require "peictt/builder/router"
@@ -22,25 +20,24 @@ require "peictt/parser/json"
 
 module Peictt
   class Application
-
+    @request = nil
     def call(env)
       if env["PATH_INFO"] == "/favicon.ico"
-        return [ 500, {}, [] ]
+        return [500, {}, []]
       end
-      @@request = Rack::Request.new(env)
+      @request = Rack::Request.new(env)
       get_rack_app(env).call(env)
     end
 
-    def self.config(&block)
-      binding.pry
+    def self.config
     end
 
     def self.params
-      @@request.params
+      @request.params
     end
 
     def self.session
-      @@request.session
+      @request.session
     end
 
     def self.routes

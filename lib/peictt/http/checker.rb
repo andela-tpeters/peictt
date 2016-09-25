@@ -10,7 +10,7 @@ module Peictt
           end
         end
 
-        -> (env) { [404,{},["Route not found"]] }
+        -> (_env) { [404, {}, ["Route not found"]] }
       end
     end
   end

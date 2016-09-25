@@ -2,7 +2,7 @@ module Peictt
   module Builder
     class Template
       attr_reader :body, :arg, :locals, :action, :format
-      FORMAT = [:json, :text]
+      FORMAT = [:json, :text].freeze
 
       def initialize(args, controller_name, action)
         @arg = args
@@ -32,12 +32,13 @@ module Peictt
           get_locals
 
         else
-          raise "First for render argument must be a view name as a Symbol or string; Second argument for render must be type Hash"
+          raise "First for render argument must be a view name as a Symbol or"\
+            "string; Second argument for render must be type Hash"
         end
       end
 
       def get_format(keys)
-        format = keys.select! { |key| FORMAT.include? key }
+        format = keys.select { |key| FORMAT.include? key }
         raise "2 application types given...expected 1" if format.size > 1
         @format = (format[0] unless format.empty?) || :html
       end
@@ -64,17 +65,26 @@ module Peictt
       end
 
       def template_from_view(name)
-        @body = filename(name, @controller)
+        @body = filename(name, @controller) if html? || text?
+        @body = File.read(filename(name, @controller)) if json?
       end
 
-
       def template_from_controller(name, controller_name)
-        @body = filename(name, controller_name)
+        @body = filename(name, controller_name) if html? || text?
+        @body = File.read(filename(name, controller_name)) if json?
       end
 
       def filename(name, controller_name)
-        (File.join("app","views", controller_name, "#{name}.haml") if html? || text?) ||
-        (File.join("app","views", controller_name, "#{name}.json.peictt") if json?)
+        return json_file(name, controller_name) if json?
+        html_file
+      end
+
+      def html_file(name, controller_name)
+        File.join("app", "views", controller_name, "#{name}.haml")
+      end
+
+      def json_file(name, controller_name)
+        File.join("app", "views", controller_name, "#{name}.json.haml")
       end
 
       def html?

@@ -13,12 +13,8 @@ module Peictt
       end
 
       def separate_args(args)
-        if args.size > 1
-          @args = args[1]
-          @url = args[0]
-        else
-          @url = args[0]
-        end
+        @args = args[1] if args.size > 1
+        @url = args[0]
       end
 
       def process_args
@@ -32,11 +28,11 @@ module Peictt
       end
 
       def process_url(url)
-        if (correct_format?(url)) && @args.empty?
-          @url = url.gsub(/#/, '/')
+        if correct_format?(url) && @args.empty?
+          @url = url.tr("#", "/")
           url =~ CONTROLLER_ACTION_REGEXP
           set_controller_and_action $1, $2
-        elsif !(correct_format?(url)) && @args.empty?
+        elsif !correct_format?(url) && @args.empty?
           raise ArgumentError.new("Route arguments are not correct")
         end
         @regexp = Regexp.new("/#{get_url_regexp(@url)}")
@@ -69,7 +65,8 @@ module Peictt
       end
 
       def properties_from_string(str)
-        raise ArgumentError.new("correct format for 2nd argument for routes is `controller#action`") unless correct_format? str
+        raise ArgumentError.new("correct format for 2nd argument for routes is"\
+          "`controller#action`") unless correct_format?(str)
         str =~ CONTROLLER_ACTION_REGEXP
         set_controller_and_action $1, $2
       end
@@ -96,7 +93,8 @@ module Peictt
 
       def args_valid?(args)
         unless (args.is_a? String) || (args.is_a? Hash)
-          raise ArgumentError.new("Second argument for routes must either be a string or hash type")
+          raise ArgumentError.new("Second argument for routes must either be a"\
+            "string or hash type")
         end
       end
     end
