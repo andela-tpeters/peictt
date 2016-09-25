@@ -3,6 +3,7 @@ require "pry"
 require "haml"
 require "puma"
 require "json"
+require "active_support/inflector"
 require "peictt/controller"
 require "peictt/utils"
 require "peictt/builder/http_header"
@@ -16,6 +17,10 @@ require "peictt/http/put"
 require "peictt/http/patch"
 require "peictt/http/match"
 require "peictt/parser/json"
+require "peictt/orm/database"
+require "peictt/orm/base_model"
+require "peictt/orm/migrations"
+require "peictt/orm/constraints_parser"
 
 module Peictt
   class Application
@@ -28,7 +33,8 @@ module Peictt
       get_rack_app(env).call(env)
     end
 
-    def self.config
+    def self.config(&block)
+      # binding.pry
     end
 
     def self.params

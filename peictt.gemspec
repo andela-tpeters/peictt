@@ -37,5 +37,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "require_all"
   spec.add_runtime_dependency "json"
   spec.add_runtime_dependency "thor"
-
+  spec.add_runtime_dependency "sqlite3"
+  spec.add_runtime_dependency "inflections"
 end
