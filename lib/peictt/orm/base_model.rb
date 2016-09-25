@@ -60,6 +60,14 @@ module Peictt
       self.table = self.to_s.downcase.pluralize
       result = DatabaseMapper.find_by self, attributes
       return result if result.nil?
+      convert_to_object result
+    end
+
+    def self.table_name
+      @@table_name = self.to_s.downcase.pluralize
+    end
+
+    def self.convert_to_object(result)
       key_pair = columns.zip(result).to_h
       item = self.new key_pair
       parse_to_time item
@@ -79,7 +87,13 @@ module Peictt
       model.updated_at = model.updated_at.to_time unless model.updated_at.nil?
     end
 
-    def self.where(search_params)
+    def self.all
+      result = DatabaseMapper.get_all self
+      all = []
+      result.each do |row|
+        all << convert_to_object(row)
+      end
+      all
     end
   end
 end

@@ -119,5 +119,10 @@ module Peictt
       "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')}"\
       "LIMIT 1"
     end
+
+    def self.get_all(klass)
+      table_name = klass.to_s.to_snake_case.pluralize
+      Database.execute_query "SELECT * FROM #{table_name}"
+    end
   end
 end
