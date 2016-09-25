@@ -1,0 +1,10 @@
+require "bundler"
+Bundler.require
+require_all "app"
+
+module <%= app.to_camel_case %>
+  class Application < Peictt::Application
+  end
+end
+
+require File.expand_path("../routes", __FILE__)

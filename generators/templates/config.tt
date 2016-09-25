@@ -1,0 +1,2 @@
+require "./config/application"
+run <%= app.to_camel_case %>::Application.new
