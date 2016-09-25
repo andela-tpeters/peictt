@@ -37,8 +37,8 @@ module Peictt
         end
       end
 
-      def parse_variables_helper(key, value, _file)
-        @file = @file.gsub(regexp_with_space(key), "\"#{value}\"").
+      def parse_variables_helper(key, value, file)
+        @file = file.gsub(regexp_with_space(key), "\"#{value}\"").
                 gsub(regexp_without_space(key), "\"#{value}\"")
       end
 

@@ -2,6 +2,8 @@ module Peictt
   module Builder
     class HttpHeader
       attr_reader :status, :args
+      attr_writer :status
+
       MODIFIERS = [:text, :json, :headers, :status].freeze
 
       def initialize(arg)

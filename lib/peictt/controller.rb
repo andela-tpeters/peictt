@@ -20,7 +20,7 @@ module Peictt
     end
 
     def redirect_to(url)
-      response([], 301, "Location" => url)
+      response([], 302, "Location" => url)
     end
 
     def response(body, status = 200, headers = {})

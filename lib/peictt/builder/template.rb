@@ -76,7 +76,7 @@ module Peictt
 
       def filename(name, controller_name)
         return json_file(name, controller_name) if json?
-        html_file
+        html_file(name, controller_name)
       end
 
       def html_file(name, controller_name)
