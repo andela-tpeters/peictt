@@ -10,12 +10,7 @@ module Peictt
     end
 
     def save
-      begin
-        Database.execute_query query, @values
-      rescue Exception => e
-        Database.connect.rollback
-        return false
-      end
+      Database.execute_query query, @values
       true
     end
 

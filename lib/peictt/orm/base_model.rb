@@ -33,10 +33,16 @@ module Peictt
 
     def save
       if @id
+        self.class.parse_time_to_s self
         return DatabaseMapper.new(self, :update).save
       else
         return DatabaseMapper.new(self, :create).save
       end
+    end
+
+    def self.parse_time_to_s(model)
+      model.updated_at = Time.now.to_s
+      model.created_at = model.created_at.to_s
     end
 
     def self.create(attributes)
