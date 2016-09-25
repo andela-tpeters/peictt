@@ -1,5 +1,5 @@
-require 'thor'
-require 'pry'
+require "thor"
+require "pry"
 require "peictt/utils"
 
 module Generators
@@ -8,7 +8,7 @@ module Generators
 
     attr_reader :app
 
-    @@dirs = %w(
+    @dirs = %w(
       app
       bin
       app/controllers
@@ -18,8 +18,11 @@ module Generators
       db
       db/migrations
       config public
-      )
+    )
 
+    class << self
+      attr_reader :dirs
+    end
 
     def self.source_root
       File.dirname(__FILE__) + "/templates"
@@ -32,7 +35,6 @@ module Generators
       create_app_directories
       create_directory_files
     end
-
 
     desc "generate", "this is generator"
     def generate(file, name)
@@ -58,9 +60,9 @@ module Generators
     private
 
     def controller(name)
-      if File.exists?("config.ru")
+      if File.exist?("config.ru")
         template "controller_template.rb",
-          "app/controllers/#{name.to_snake_case}.rb"
+                 "app/controllers/#{name.to_snake_case}.rb"
       else
         say "Can't find the config.ru file"
       end
@@ -69,15 +71,14 @@ module Generators
     def create_app_directories
       empty_directory app
 
-      @@dirs.each do |dir|
+      self.class.dirs.each do |dir|
         empty_directory "#{app}/#{dir}"
       end
     end
 
     def create_directory_files
-
       copy_file "application_controller.rb",
-        "#{app}/app/controllers/application_controller.rb"
+                "#{app}/app/controllers/application_controller.rb"
 
       template "application.tt", "#{app}/config/application.rb"
       template "config.tt", "#{app}/config.ru"
@@ -89,7 +90,6 @@ module Generators
         file = File.join(File.dirname(__FILE__), "..", "bin", filename)
         copy_file file, "#{app}/bin/#{filename}"
       end
-
     end
   end
 end
