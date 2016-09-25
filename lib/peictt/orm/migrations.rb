@@ -5,7 +5,7 @@ module Peictt
       @column_type = type.to_s.upcase
       @options = args[1] if args[1].is_a? Hash
       table_properties << "#{@column_name} #{@column_type} "\
-      "#{parse_options(@options.dup).join(" ")}"
+      "#{parse_options(@options.dup).join(' ')}"
       @options = {}
     end
 
@@ -13,8 +13,8 @@ module Peictt
       @table_properties ||= []
     end
 
-    def create_table(table_name, &block)
-      @table_name = "#{table_name}".pluralize
+    def create_table(table_name)
+      @table_name = table_name.to_s.pluralize
       yield self
       migrate
     end
@@ -34,7 +34,8 @@ module Peictt
     end
 
     def create_table_query
-      "CREATE TABLE IF NOT EXISTS #{@table_name} (#{@table_properties.join ", "})"
+      "CREATE TABLE IF NOT EXISTS #{@table_name}"\
+      "(#{@table_properties.join ', '})"
     end
 
     def drop_table_query

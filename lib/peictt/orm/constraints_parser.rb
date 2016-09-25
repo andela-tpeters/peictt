@@ -1,11 +1,11 @@
 module Peictt
   class ConstraintsParser
-    UNIQUE = "UNIQUE"
-    NULL = "NULL"
-    NOT_NULL = "NOT NULL"
-    PRIMARY_KEY = "PRIMARY KEY"
-    DEFAULT =  ''
-    AUTO_INCREMENT = "AUTOINCREMENT"
+    UNIQUE = "UNIQUE".freeze
+    NULL = "NULL".freeze
+    NOT_NULL = "NOT NULL".freeze
+    PRIMARY_KEY = "PRIMARY KEY".freeze
+    DEFAULT = "".freeze
+    AUTO_INCREMENT = "AUTOINCREMENT".freeze
 
     @result = []
     def self.parse(constraints = {})
@@ -37,6 +37,5 @@ module Peictt
     def self.default(value = "")
       @result << "DEFAULT '#{value}'"
     end
-
   end
 end
