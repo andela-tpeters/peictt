@@ -1,12 +1,22 @@
-require "haml"
+require "tilt/haml"
 
 module Peictt
-  class Controller < Peictt::Session
+  class Controller
+    DEFAULT_LAYOUT = "application".freeze
     attr_reader :request
 
-    def initialize(env)
-      @env = env
-      @request = Rack::Request.new(env)
+    class << self
+      attr_accessor :layout
+
+      def action(action_name)
+        -> (_env) { new.dispatch(action_name) }
+      end
+
+      def layout(layout_name = nil)
+        view_name = layout_name || DEFAULT_LAYOUT
+        file = File.join("app", "views", "layouts", "#{view_name}.haml")
+        @layout = Tilt::HamlTemplate.new(file)
+      end
     end
 
     def redirect_to(url)
@@ -22,7 +32,11 @@ module Peictt
     end
 
     def params
-      request.params
+      Peictt::Application.params
+    end
+
+    def session
+      Peictt::Application.session
     end
 
     def render(*args)
@@ -32,10 +46,21 @@ module Peictt
     end
 
     def render_template(template)
-      return Haml::Engine.new(template.body).render(self, template.locals) if
-        template.html?
-      return Parser::JSON.new(template.body).render(self, template.locals) if
-        template.json?
+      if template.html? || template.text?
+        return render_html(template)
+      else
+        return render_json(template)
+      end
+    end
+
+    def render_html(template)
+      self.class.layout.render(self, template.locals) do
+        Tilt::HamlTemplate.new(template.body).render(self, template.locals)
+      end
+    end
+
+    def render_json(template)
+      Parser::JSON.new(template.body).render(self, template.locals)
     end
 
     def controller_name
@@ -45,16 +70,8 @@ module Peictt
     def dispatch(action)
       @action = action
       send(action)
-      if get_response
-        get_response
-      else
-        render(action)
-        get_response
-      end
-    end
-
-    def self.action(action_name)
-      -> (env) { new(env).dispatch(action_name) }
+      render(action) unless get_response
+      get_response
     end
   end
 end

@@ -16,34 +16,30 @@ module Peictt
 
       def parse_instance_variables(klass)
         if klass
-          vars = klass.instance_variables.select do |var|
-            !NOT_ALLOWED.include? var
-          end
+          vars = prune_instance_variables klass
           vars.each do |var|
-            var_str = to_str var
             value = klass.instance_variable_get(var)
-            @file = replace_placeholders @file, value
+            parse_variables_helper(to_str(var), value, @file)
           end
         end
+      end
+
+      def prune_instance_variables(klass)
+        klass.instance_variables.select { |var| !NOT_ALLOWED.include? var }
       end
 
       def parse_local_variables(locals)
         unless locals.empty?
           keys = locals.keys
           keys.each do |key|
-            key_str = to_str key
-            value = locals[key]
-            @file = replace_placeholders @file, value
+            parse_variables_helper(to_str(key), locals[key], @file)
           end
         end
       end
 
-      def replace_placeholders(file, value)
-        file.gsub(
-          regexp_with_space(key_str), (("\"#{value}\"" if value) || "")
-        ).gsub(
-          regexp_without_space(key_str), (("\"#{value}\"" if value) || "")
-        )
+      def parse_variables_helper(key, value, file)
+        @file = file.gsub(regexp_with_space(key), "\"#{value}\"").
+                gsub(regexp_without_space(key), "\"#{value}\"")
       end
 
       def parse_missing_variables
@@ -55,11 +51,11 @@ module Peictt
         @file.gsub(/(\s+)/, "\s")
       end
 
-      def regexp_with_space(str = "[a-z_]")
+      def regexp_with_space(str = "[a-z_@]")
         Regexp.new("(=\s#{str}+)")
       end
 
-      def regexp_without_space(str = "[a-z_]")
+      def regexp_without_space(str = "[a-z_@]")
         Regexp.new("(=#{str}+)")
       end
 
