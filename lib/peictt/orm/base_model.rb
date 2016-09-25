@@ -59,10 +59,21 @@ module Peictt
     def self.find_by(attributes)
       @@table_name = self.to_s.downcase.pluralize
       result = DatabaseMapper.find_by self, attributes
+      return result if result.nil?
       key_pair = columns.zip(result).to_h
-      key_pair["created_at"] = key_pair["created_at"].to_time
-      key_pair["updated_at"] = key_pair["updated_at"].to_time
+      key_pair["created_at"] = key_pair["created_at"].to_time unless
+        key_pair["created_at"].nil?
+      key_pair["updated_at"] = key_pair["updated_at"].to_time unless
+        key_pair["updated_at"].nil?
       self.new key_pair
+    end
+
+    def destroy
+      DatabaseMapper.destroy self
+    end
+
+    def self.destroy_all
+      DatabaseMapper.destroy_all self.to_s.to_snake_case.pluralize
     end
 
     def self.where(search_params)

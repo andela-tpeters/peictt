@@ -85,5 +85,25 @@ module Peictt
       "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')}"\
       "LIMIT 1"
     end
+
+    def self.destroy(model)
+      @id = model.id
+      @table_name = model.class.to_s.to_snake_case.pluralize
+      Database.execute_query destroy_query, [@id]
+      true
+    end
+
+    def self.destroy_query
+      "DELETE FROM #{@table_name} WHERE id = ?"
+    end
+
+    def self.destroy_all(table_name)
+      @table_name = table_name
+      Database.execute_query destroy_all_query
+    end
+
+    def self.destroy_all_query
+      "DELETE FROM #{@table_name}"
+    end
   end
 end
