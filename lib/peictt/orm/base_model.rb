@@ -63,10 +63,6 @@ module Peictt
       convert_to_object result
     end
 
-    def self.table_name
-      @@table_name = self.to_s.downcase.pluralize
-    end
-
     def self.convert_to_object(result)
       key_pair = columns.zip(result).to_h
       item = self.new key_pair
