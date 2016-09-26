@@ -120,7 +120,7 @@ module Generators
     def controller(name)
       if File.exists?("config.ru")
         template "controller_template.rb",
-          "#{APP_ROOT}/app/controllers/#{name.to_snake_case}.rb",
+          "#{APP_ROOT}/app/controllers/#{name.to_snake_case}_controller.rb",
           { name: name }
       else
         say "Can't find the config.ru file"
