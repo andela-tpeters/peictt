@@ -1,8 +1,8 @@
 module Peictt
   module Builder
     class HttpHeader
-      attr_reader :status, :args
-      attr_writer :status
+      attr_reader :args
+      attr_reader :headers
 
       MODIFIERS = [:text, :json, :headers, :status].freeze
 
@@ -12,6 +12,12 @@ module Peictt
         process_args
       end
 
+      def status
+        @status || 200
+      end
+
+      private
+
       def json
         @headers["Content-Type"] = "application/json"
       end
@@ -20,18 +26,12 @@ module Peictt
         @headers["Content-Type"] = "text/plain"
       end
 
-      def status(status = 200)
-        @status = status
-      end
-
-      attr_reader :headers
-
       def add_headers(headers)
         @headers.merge! headers
       end
 
       def process_options(options)
-        (status(options[:status]) if options[:status]) || status
+        @status = options[:status]
         options.keys.each do |key|
           if MODIFIERS.include?(key) && key != :headers
             send(key)
@@ -50,7 +50,8 @@ module Peictt
             (args[0].is_a? Symbol))
           status
         elsif (args.size > 1) && (!args[1].is_a? Hash)
-          raise "First for render argument must be a view name as a Symbol or"\
+          raise ArgumentError.new "First for render argument must be a view"\
+            "name as a Symbol or"\
             "string; Second argument for render must be type Hash"
         end
       end
