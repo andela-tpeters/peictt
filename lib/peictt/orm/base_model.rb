@@ -14,20 +14,17 @@ module Peictt
     end
 
     def self.set_methods
-      columns = Database.connect.table_info(self.class.table).map do |column|
-        column["name"]
-      end
       make_methods columns
+    end
+
+    def self.columns
+      Database.connect.table_info(@@table_name).
+        map { |column| column['name'] }
     end
 
     def self.make_methods(columns)
       columns.each do |column|
-        attr_accessor column.to_sym unless columns == "created_at" || "updated_at"
-        if (column == "created_at") || (column == "updated_at")
-          attr_reader column.to_sym
-        else
-          attr_accessor column.to_sym
-        end
+        attr_accessor column.to_sym
       end
     end
 
@@ -46,18 +43,43 @@ module Peictt
     end
 
     def self.create(attributes)
-
+      model = self.new(attributes)
+      model.save
+      find_by title: model.title
     end
 
     def update(attributes)
       attributes.each do |key, value|
+        send("#{key}=", values)
       end
+      self.updated_at = Time.now.to_s
+      self
     end
 
-    def self.find_by(attributes = {})
+    def self.find_by(attributes)
+      @@table_name = self.to_s.downcase.pluralize
+      result = DatabaseMapper.find_by self, attributes
+      return result if result.nil?
+      key_pair = columns.zip(result).to_h
+      item = self.new key_pair
+      parse_to_time item
+      item
     end
 
-    def self.where()
+    def destroy
+      DatabaseMapper.destroy self
+    end
+
+    def self.destroy_all
+      DatabaseMapper.destroy_all self.to_s.to_snake_case.pluralize
+    end
+
+    def self.parse_to_time(model)
+      model.created_at = model.created_at.to_time unless model.created_at.nil?
+      model.updated_at = model.updated_at.to_time unless model.updated_at.nil?
+    end
+
+    def self.where(search_params)
     end
   end
 end
