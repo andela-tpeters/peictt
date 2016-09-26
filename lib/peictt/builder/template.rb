@@ -93,11 +93,11 @@ module Peictt
       end
 
       def html_file(name, controller_name)
-        File.join("app", "views", controller_name, "#{name}.haml")
+        File.join(APP_ROOT, "app", "views", controller_name, "#{name}.haml")
       end
 
       def json_file(name, controller_name)
-        File.join("app", "views", controller_name, "#{name}.json.haml")
+        File.join(APP_ROOT, "app", "views", controller_name, "#{name}.json.haml")
       end
     end
   end
