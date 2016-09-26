@@ -60,7 +60,7 @@ module Peictt
     end
 
     def render_json(template)
-      Parser::JSON.new(template.body).render(self, template.locals)
+      Parser::JSON.new(File.read(template.body)).render(self, template.locals)
     end
 
     def controller_name
