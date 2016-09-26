@@ -13,7 +13,12 @@ module Peictt
       @table_properties ||= []
     end
 
-    def create_table(table_name)
+    def timestamps
+      table_properties << "created_at DATETIME"
+      table_properties << "updated_at DATETIME"
+    end
+
+    def create_table(table_name, &block)
       @table_name = table_name.to_s.pluralize
       yield self
       migrate
