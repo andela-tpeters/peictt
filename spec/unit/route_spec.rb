@@ -23,7 +23,7 @@ describe Peictt::Builder::Router do
     context 'when route block is passed' do
       context 'when controller does not exist' do
         it "raises controller not found error" do
-          expect {@router.draw { get "posts#index" }}.to raise_error NameError
+          expect {@router.draw { get "posts#index" }}.to raise_error LoadError
         end
       end
 
