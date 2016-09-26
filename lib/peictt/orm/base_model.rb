@@ -18,7 +18,7 @@ module Peictt
     end
 
     def self.columns
-      Database.connect.table_info(@@table_name).
+      Database.connect.table_info(self.table).
         map { |column| column['name'] }
     end
 
@@ -57,7 +57,7 @@ module Peictt
     end
 
     def self.find_by(attributes)
-      @@table_name = self.to_s.downcase.pluralize
+      self.table = self.to_s.downcase.pluralize
       result = DatabaseMapper.find_by self, attributes
       return result if result.nil?
       key_pair = columns.zip(result).to_h
