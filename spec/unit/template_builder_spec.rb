@@ -11,7 +11,7 @@ describe Peictt::Builder::Template do
         controller = template.instance_variable_get :@controller
         expect(controller).to eq 'posts'
         expect(template.action).to eq :index
-        expect(template.body).to eq "app/views/posts/test_file.haml"
+        expect(template.body).to eq "#{APP_ROOT}/app/views/posts/test_file.haml"
       end
     end
 
@@ -21,7 +21,7 @@ describe Peictt::Builder::Template do
                                                  'posts',
                                                  :index
         expect(template.json?).to be_truthy
-        expect(template.body).to eq "app/views/posts/test_file.json.haml"
+        expect(template.body).to eq "#{APP_ROOT}/app/views/posts/test_file.json.haml"
       end
     end
 
