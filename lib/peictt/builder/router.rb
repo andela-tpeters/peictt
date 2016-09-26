@@ -19,6 +19,7 @@ module Peictt
         verb_class = Object.const_get "Peictt::Http::#{verb}"
         route = verb_class.new url, args
         @routes << route
+        route
       end
     end
   end
