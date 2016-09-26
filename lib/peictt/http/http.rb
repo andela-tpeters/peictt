@@ -12,6 +12,8 @@ module Peictt
         process_args if @args
       end
 
+      private
+
       def separate_args(args)
         @args = args[1] if args.size > 1
         @url = args[0]
