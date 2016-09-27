@@ -7,7 +7,7 @@ module Peictt
 
       def initialize(regexp, options = {})
         @regexp = (regexp if regexp.is_a? Regexp) || regexp_error
-        controller_error unless options.has_key? :controller
+        controller_error unless options.key? :controller
         set_controller options[:controller]
         @action = options[:action] || action_error
         get_verbs options[:methods]
@@ -24,13 +24,13 @@ module Peictt
       end
 
       def controller_from_camel_case(controller)
-        if /^[A-Z][a-z]+Controller/.match controller
+        if /^[A-Z][a-z]+Controller/ =~ controller
           @controller = Object.const_get controller
         end
       end
 
       def controller_from_string(controller)
-        if /^[a-z_]+$/.match controller
+        if /^[a-z_]+$/ =~ controller
           temp = controller.to_camel_case
           @controller = Object.const_get "#{temp}Controller"
         end

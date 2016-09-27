@@ -1,6 +1,6 @@
 module Peictt
   class Migrations
-    def create_table(table_name, &block)
+    def create_table(table_name)
       @table_name = table_name.to_s.pluralize
       yield self
       migrate
@@ -22,7 +22,6 @@ module Peictt
       table_properties << "created_at DATETIME"
       table_properties << "updated_at DATETIME"
     end
-
 
     def migrate
       Database.execute_query create_table_query
@@ -47,8 +46,12 @@ module Peictt
       @column_type = type.to_s.upcase
       @options = args[1] if args[1].is_a? Hash
       table_properties << "#{@column_name} #{@column_type} "\
-      "#{parse_options(@options.dup).join(" ")}"
+      "#{parse_options(@options.dup).join(' ')}"
       @options = {}
+    end
+
+    def respond_to_missing?(type, include_private = false)
+      super
     end
   end
 end

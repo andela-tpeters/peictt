@@ -36,7 +36,7 @@ module Peictt
       get_rack_app(env).call(env)
     end
 
-    def self.config(&block)
+    def self.config
       # binding.pry
     end
 

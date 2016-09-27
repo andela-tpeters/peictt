@@ -75,21 +75,6 @@ module Peictt
       @values << Time.now.to_s
     end
 
-    def self.columns(variables)
-      q_holders = []
-      columns = variables.map do |var|
-        q_holders << "?"
-        var.to_s.sub /[:@]/, ""
-      end
-      [q_holders, columns]
-    end
-
-    def self.values(model, variables)
-      variables.map do |var|
-        model.instance_variable_get var
-      end
-    end
-
     def build_create_query
       "INSERT INTO #{@table_name} (#{@columns.join(', ')})"\
       "VALUES (#{@q_holders.join(', ')})"
@@ -98,31 +83,43 @@ module Peictt
     def build_update_query
       prepare_columns_and_values_for_update
       columns_and_q_holders = @columns.zip(@q_holders[1..-1]).
-        map do |pair|
-          pair.join " = "
-        end
-      "UPDATE #{@table_name} SET #{columns_and_q_holders.join(", ")} "\
+                              map do |pair|
+        pair.join " = "
+      end
+      "UPDATE #{@table_name} SET #{columns_and_q_holders.join(', ')} "\
       "WHERE id = ?"
     end
 
-    def self.find_query
-      "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')} "\
-      " LIMIT 1"
-    end
+    class << self
+      def columns(variables)
+        q_holders = []
+        columns = variables.map do |var|
+          q_holders << "?"
+          var.to_s.sub /[:@]/, ""
+        end
+        [q_holders, columns]
+      end
 
+      def values(model, variables)
+        variables.map do |var|
+          model.instance_variable_get var
+        end
+      end
 
-    def self.destroy_query
-      "DELETE FROM #{@table_name} WHERE id = ?"
-    end
+      private
 
-    def self.destroy_all_query
-      "DELETE FROM #{@table_name}"
+      def find_query
+        "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')} "\
+        " LIMIT 1"
+      end
 
-    end
+      def destroy_query
+        "DELETE FROM #{@table_name} WHERE id = ?"
+      end
 
-    def self.find_query
-      "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')}"\
-      "LIMIT 1"
+      def destroy_all_query
+        "DELETE FROM #{@table_name}"
+      end
     end
   end
 end

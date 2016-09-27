@@ -30,6 +30,10 @@ module Peictt
         end
         false
       end
+
+      def respond_to_missing?(type, include_private = false)
+        super
+      end
     end
   end
 end

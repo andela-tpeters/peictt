@@ -18,8 +18,8 @@ module Peictt
     end
 
     def self.columns
-      Database.connect.table_info(self.table).
-        map { |column| column['name'] }
+      Database.connect.table_info(table).
+        map { |column| column["name"] }
     end
 
     def self.make_methods(columns)
@@ -43,13 +43,13 @@ module Peictt
     end
 
     def self.create(attributes)
-      model = self.new(attributes)
+      model = new(attributes)
       model.save
       find_by title: model.title
     end
 
     def update(attributes)
-      attributes.each do |key, value|
+      attributes.each do |key, _value|
         send("#{key}=", values)
       end
       self.updated_at = Time.now.to_s
@@ -57,7 +57,7 @@ module Peictt
     end
 
     def self.find_by(attributes)
-      self.table = self.to_s.downcase.pluralize
+      self.table = to_s.downcase.pluralize
       result = DatabaseMapper.find_by self, attributes
       return result if result.nil?
       convert_to_object result
@@ -65,7 +65,7 @@ module Peictt
 
     def self.convert_to_object(result)
       key_pair = columns.zip(result).to_h
-      item = self.new key_pair
+      item = new key_pair
       parse_to_time item
       item
     end
@@ -75,7 +75,7 @@ module Peictt
     end
 
     def self.destroy_all
-      DatabaseMapper.destroy_all self.to_s.to_snake_case.pluralize
+      DatabaseMapper.destroy_all to_s.to_snake_case.pluralize
     end
 
     def self.parse_to_time(model)

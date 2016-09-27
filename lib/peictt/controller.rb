@@ -14,7 +14,13 @@ module Peictt
 
       def layout(layout_name = nil)
         view_name = layout_name || DEFAULT_LAYOUT
-        file = File.join(APP_ROOT, "app", "views", "layouts", "#{view_name}.haml")
+        file = File.join(
+          APP_ROOT,
+          "app",
+          "views",
+          "layouts",
+          "#{view_name}.haml"
+        )
         @layout = Tilt::HamlTemplate.new(file)
       end
     end

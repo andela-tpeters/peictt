@@ -97,7 +97,13 @@ module Peictt
       end
 
       def json_file(name, controller_name)
-        File.join(APP_ROOT, "app", "views", controller_name, "#{name}.json.haml")
+        File.join(
+          APP_ROOT,
+          "app",
+          "views",
+          controller_name,
+          "#{name}.json.haml"
+        )
       end
     end
   end
