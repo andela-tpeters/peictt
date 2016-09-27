@@ -9,8 +9,21 @@ module Peictt
         @action = action
         @controller = controller_name
         process_args arg.dup
-        raise "Template view not found" unless @body
       end
+
+      def html?
+        @format == :html
+      end
+
+      def json?
+        @format == :json
+      end
+
+      def text?
+        @format == :text
+      end
+
+      private
 
       def process_args(arg)
         if (arg.size > 1) && (arg[1].is_a? Hash)
@@ -32,8 +45,9 @@ module Peictt
           get_locals
 
         else
-          raise "First for render argument must be a view name as a Symbol or"\
-            "string; Second argument for render must be type Hash"
+          raise ArgumentError.new "First for render argument must be a view"\
+            " name as a Symbol or"\
+            " string; Second argument for render must be type Hash"
         end
       end
 
@@ -52,6 +66,7 @@ module Peictt
         if options[:controller].nil?
           template_from_view(view_name)
         elsif options[:controller]
+          @controller = options[:controller]
           template_from_controller(view_name, options[:controller])
         else
           build_template_from_parts(options)
@@ -65,13 +80,11 @@ module Peictt
       end
 
       def template_from_view(name)
-        @body = filename(name, @controller) if html? || text?
-        @body = File.read(filename(name, @controller)) if json?
+        @body = filename(name, @controller)
       end
 
       def template_from_controller(name, controller_name)
-        @body = filename(name, controller_name) if html? || text?
-        @body = File.read(filename(name, controller_name)) if json?
+        @body = filename(name, controller_name)
       end
 
       def filename(name, controller_name)
@@ -80,23 +93,17 @@ module Peictt
       end
 
       def html_file(name, controller_name)
-        File.join("app", "views", controller_name, "#{name}.haml")
+        File.join(APP_ROOT, "app", "views", controller_name, "#{name}.haml")
       end
 
       def json_file(name, controller_name)
-        File.join("app", "views", controller_name, "#{name}.json.haml")
-      end
-
-      def html?
-        @format == :html
-      end
-
-      def json?
-        @format == :json
-      end
-
-      def text?
-        @format == :text
+        File.join(
+          APP_ROOT,
+          "app",
+          "views",
+          controller_name,
+          "#{name}.json.haml"
+        )
       end
     end
   end

@@ -14,6 +14,8 @@ module Peictt
         minify
       end
 
+      private
+
       def parse_instance_variables(klass)
         if klass
           vars = prune_instance_variables klass

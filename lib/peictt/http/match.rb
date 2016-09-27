@@ -7,9 +7,33 @@ module Peictt
 
       def initialize(regexp, options = {})
         @regexp = (regexp if regexp.is_a? Regexp) || regexp_error
-        @controller = options[:controller] || controller_error
+        controller_error unless options.key? :controller
+        set_controller options[:controller]
         @action = options[:action] || action_error
         get_verbs options[:methods]
+      end
+
+      private
+
+      def set_controller(controller)
+        if controller.is_a? String
+          controller_from_camel_case(controller)
+          controller_from_string(controller) unless @controller
+        end
+        @controller = controller unless @controller
+      end
+
+      def controller_from_camel_case(controller)
+        if /^[A-Z][a-z]+Controller/ =~ controller
+          @controller = Object.const_get controller
+        end
+      end
+
+      def controller_from_string(controller)
+        if /^[a-z_]+$/ =~ controller
+          temp = controller.to_camel_case
+          @controller = Object.const_get "#{temp}Controller"
+        end
       end
 
       def get_verbs(methods)

@@ -14,7 +14,13 @@ module Peictt
 
       def layout(layout_name = nil)
         view_name = layout_name || DEFAULT_LAYOUT
-        file = File.join("app", "views", "layouts", "#{view_name}.haml")
+        file = File.join(
+          APP_ROOT,
+          "app",
+          "views",
+          "layouts",
+          "#{view_name}.haml"
+        )
         @layout = Tilt::HamlTemplate.new(file)
       end
     end
@@ -60,7 +66,7 @@ module Peictt
     end
 
     def render_json(template)
-      Parser::JSON.new(template.body).render(self, template.locals)
+      Parser::JSON.new(File.read(template.body)).render(self, template.locals)
     end
 
     def controller_name

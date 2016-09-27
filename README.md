@@ -1,4 +1,4 @@
-# Peictt
+# Peictt [![Build Status](https://travis-ci.org/andela-tpeters/peictt.svg?branch=testing)](https://travis-ci.org/andela-tpeters/peictt) [![Coverage Status](https://coveralls.io/repos/github/andela-tpeters/peictt/badge.svg?branch=testing)](https://coveralls.io/github/andela-tpeters/peictt?branch=testing) [![Code Climate](https://codeclimate.com/github/andela-tpeters/peictt/badges/gpa.svg)](https://codeclimate.com/github/andela-tpeters/peictt)
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/peictt`. To experiment with that code, run `bin/console` for an interactive prompt.
 
@@ -24,6 +24,7 @@ Or install it yourself as:
 
 TODO: Write usage instructions here
 
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
@@ -38,4 +39,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

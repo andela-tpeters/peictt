@@ -6,6 +6,7 @@ require "json"
 require "active_support/inflector"
 require "peictt/controller"
 require "peictt/utils"
+require "peictt/dependencies"
 require "peictt/builder/http_header"
 require "peictt/builder/template"
 require "peictt/builder/router"
@@ -16,6 +17,7 @@ require "peictt/http/post"
 require "peictt/http/put"
 require "peictt/http/patch"
 require "peictt/http/match"
+require "peictt/http/delete"
 require "peictt/parser/json"
 require "peictt/orm/database"
 require "peictt/orm/base_model"
@@ -34,7 +36,7 @@ module Peictt
       get_rack_app(env).call(env)
     end
 
-    def self.config(&block)
+    def self.config
       # binding.pry
     end
 

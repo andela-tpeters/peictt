@@ -1,24 +1,6 @@
 module Peictt
   class Migrations
-    def method_missing(type, *args)
-      @column_name = args[0]
-      @column_type = type.to_s.upcase
-      @options = args[1] if args[1].is_a? Hash
-      table_properties << "#{@column_name} #{@column_type} "\
-      "#{parse_options(@options.dup).join(" ")}"
-      @options = {}
-    end
-
-    def table_properties
-      @table_properties ||= []
-    end
-
-    def timestamps
-      table_properties << "created_at DATETIME"
-      table_properties << "updated_at DATETIME"
-    end
-
-    def create_table(table_name, &block)
+    def create_table(table_name)
       @table_name = table_name.to_s.pluralize
       yield self
       migrate
@@ -27,6 +9,18 @@ module Peictt
     def drop(table_name)
       @table_name = table_name
       Database.execute_query drop_table_query
+      true
+    end
+
+    private
+
+    def table_properties
+      @table_properties ||= []
+    end
+
+    def timestamps
+      table_properties << "created_at DATETIME"
+      table_properties << "updated_at DATETIME"
     end
 
     def migrate
@@ -45,6 +39,19 @@ module Peictt
 
     def drop_table_query
       "DROP TABLE IF EXISTS #{@table_name}"
+    end
+
+    def method_missing(type, *args)
+      @column_name = args[0]
+      @column_type = type.to_s.upcase
+      @options = args[1] if args[1].is_a? Hash
+      table_properties << "#{@column_name} #{@column_type} "\
+      "#{parse_options(@options.dup).join(' ')}"
+      @options = {}
+    end
+
+    def respond_to_missing?(type, include_private = false)
+      super
     end
   end
 end
