@@ -66,4 +66,32 @@ describe Peictt::DatabaseMapper do
       end
     end
   end
+
+  describe '#get_all' do
+    it "return array of all items in the table" do
+      result = Peictt::DatabaseMapper.get_all Test
+      expect(result).to be_kind_of Array
+      expect(result.size).to eq 1
+    end
+  end
+
+  describe "#destroy" do
+    def create
+      @model.content = "This is for deleting from the db"
+      Peictt::DatabaseMapper.new(@model).save
+    end
+    it "deletes record from database" do
+      create
+      item = Test.find_by id: 2
+      expect(Peictt::DatabaseMapper.destroy(item)).to be_truthy
+      expect(Peictt::DatabaseMapper.find_by(Test, id: 2)).to be_nil
+    end
+  end
+
+  describe '#destroy_all' do
+    it "clears the database record" do
+      expect(Peictt::DatabaseMapper.destroy_all 'tests').to eq []
+      expect(Peictt::DatabaseMapper.get_all Test).to eq []
+    end
+  end
 end
