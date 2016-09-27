@@ -81,6 +81,12 @@ describe Peictt::Builder::Router do
           expect(route.controller).to eq PostsController
         end
       end
+
+      context "Wrong Argument" do
+        it "raises ArgumentError" do
+          expect { @router.get "posts#index", "" }.to raise_error ArgumentError
+        end
+      end
     end
   end
 end
