@@ -1,6 +1,5 @@
 module Peictt
   class BaseModel
-
     def initialize(attributes = {})
       self.class.table = self.class.to_s.downcase.pluralize
       self.class.set_methods
@@ -35,7 +34,7 @@ module Peictt
       attr_accessor :table
 
       def destroy_all
-        DatabaseMapper.destroy_all self.to_s.to_snake_case.pluralize
+        DatabaseMapper.destroy_all to_s.to_snake_case.pluralize
       end
 
       def all
@@ -48,14 +47,14 @@ module Peictt
       end
 
       def find_by(attributes)
-        self.table = self.to_s.downcase.pluralize
+        self.table = to_s.downcase.pluralize
         result = DatabaseMapper.find_by self, attributes
         return result if result.nil?
         convert_to_object result
       end
 
       def create(attributes)
-        model = self.new(attributes)
+        model = new(attributes)
         model.save
         find_by attributes
       end
@@ -77,8 +76,8 @@ module Peictt
       end
 
       def columns
-        Database.connect.table_info(self.table).
-        map { |column| column['name'] }
+        Database.connect.table_info(table).
+          map { |column| column["name"] }
       end
 
       def make_methods(columns)
@@ -89,7 +88,7 @@ module Peictt
 
       def convert_to_object(result)
         key_pair = columns.zip(result).to_h
-        item = self.new key_pair
+        item = new key_pair
         parse_to_time item
         item
       end
