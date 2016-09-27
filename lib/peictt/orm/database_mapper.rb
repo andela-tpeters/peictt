@@ -30,14 +30,6 @@ module Peictt
       true
     end
 
-    def self.find_by(model, attributes)
-      @table_name = model.to_s.downcase.pluralize
-      @q_holders, @columns = columns attributes.keys
-      @values = attributes.values
-      @combined_array = @columns.zip(@q_holders).map { |item| item.join " = " }
-      Database.execute_query(find_query, @values)[0]
-    end
-
     def self.get_all(klass)
       table_name = klass.to_s.to_snake_case.pluralize
       Database.execute_query "SELECT * FROM #{table_name}"
@@ -60,21 +52,6 @@ module Peictt
 
     def create?
       @action == :create
-    end
-
-    def build_create_query
-      "INSERT INTO #{@table_name} (#{@columns.join(', ')})"\
-      "VALUES (#{@q_holders.join(', ')})"
-    end
-
-    def build_update_query
-      prepare_columns_and_values_for_update
-      columns_and_q_holders = @columns.zip(@q_holders[1..-1]).
-        map do |pair|
-          pair.join " = "
-        end
-      "UPDATE #{@table_name} SET #{columns_and_q_holders.join(", ")} "\
-      "WHERE id = ?"
     end
 
     def set_columns_and_values
@@ -113,9 +90,24 @@ module Peictt
       end
     end
 
+    def build_create_query
+      "INSERT INTO #{@table_name} (#{@columns.join(', ')})"\
+      "VALUES (#{@q_holders.join(', ')})"
+    end
+
+    def build_update_query
+      prepare_columns_and_values_for_update
+      columns_and_q_holders = @columns.zip(@q_holders[1..-1]).
+        map do |pair|
+          pair.join " = "
+        end
+      "UPDATE #{@table_name} SET #{columns_and_q_holders.join(", ")} "\
+      "WHERE id = ?"
+    end
+
     def self.find_query
-      "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')}"\
-      "LIMIT 1"
+      "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')} "\
+      " LIMIT 1"
     end
 
 

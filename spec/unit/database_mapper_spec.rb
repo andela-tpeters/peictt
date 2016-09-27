@@ -26,7 +26,8 @@ describe Peictt::DatabaseMapper do
     before do
       Peictt::Database.execute_query "drop table if exists tests"
       Peictt::Database.execute_query "create table if not exists tests "\
-      "(id INTEGER PRIMARY KEY AUTOINCREMENT, content STRING, created_at DATETIME, updated_at DATETIME)"
+      "(id INTEGER PRIMARY KEY AUTOINCREMENT, content STRING,"\
+      "created_at DATETIME, updated_at DATETIME)"
     end
 
     context 'create new test' do
@@ -46,6 +47,22 @@ describe Peictt::DatabaseMapper do
         model.updated_at = model.updated_at.to_s
         expect(Peictt::DatabaseMapper.new(model, :update).save).to be_truthy
         expect(Test.find_by(id: 1).content).to eq "This is the updated content"
+      end
+    end
+  end
+
+  describe '#find_by' do
+    context 'when item does not exist' do
+      it "returns nil" do
+        expect(Peictt::DatabaseMapper.find_by(Test, id: 2)).to be_nil
+      end
+    end
+
+    context 'when item exist' do
+      it "returns array of values" do
+        result = Peictt::DatabaseMapper.find_by(Test, id: 1)
+        expect(result[0]).to eq 1
+        expect(result[1]).to eq "This is the updated content"
       end
     end
   end
