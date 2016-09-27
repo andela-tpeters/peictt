@@ -32,6 +32,7 @@ describe Peictt::DatabaseMapper do
 
     context 'create new test' do
       it "inserts a new test to the table" do
+        @model = Test.new
         @model.content = "This is the first content"
         expect(Peictt::DatabaseMapper.new(@model).save).to be_truthy
       end
