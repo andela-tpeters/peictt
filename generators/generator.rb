@@ -140,7 +140,8 @@ module Generators
       template "application.tt", "#{app}/config/application.rb"
       template "config.tt", "#{app}/config.ru"
       copy_file "Gemfile", "#{app}/Gemfile"
-      copy_file "routes.rb", "#{app}/config/routes.rb"
+      template "routes.rb", "#{app}/config/routes.rb", { name: app }
+      template "readme.md", "#{app}/README.md", { name: app }
       copy_file "application.haml", "#{app}/app/views/layouts/application.haml"
 
       %w(peictt setup console).each do |filename|
