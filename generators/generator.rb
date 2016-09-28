@@ -108,23 +108,21 @@ module Generators
     end
 
     def migration(name)
-      if File.exists?("config.ru")
-        template "migration_template.rb",
-          "#{APP_ROOT}/db/migrations/#{name.to_snake_case.pluralize}.rb",
-          {name: name}
-      else
-        say "Can't find the config.ru file"
-      end
+      template "migration_template.rb",
+        "#{APP_ROOT}/db/migrations/#{name.to_snake_case.pluralize}.rb",
+        {name: name}
+    end
+
+    def model(name)
+      template "model_template.rb",
+        "#{APP_ROOT}/app/models/#{name.to_snake_case.singularize}.rb",
+        {name: name}
     end
 
     def controller(name)
-      if File.exists?("config.ru")
-        template "controller_template.rb",
-          "#{APP_ROOT}/app/controllers/#{name.to_snake_case}_controller.rb",
-          { name: name }
-      else
-        say "Can't find the config.ru file"
-      end
+      template "controller_template.rb",
+        "#{APP_ROOT}/app/controllers/#{name.to_snake_case}_controller.rb",
+        { name: name }
     end
 
     def create_app_directories

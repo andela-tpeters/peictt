@@ -22,7 +22,75 @@ Or install it yourself as:
 
 
 ## Usage
-When creating a new Peictt application, a few things need to be setup and a few rules adhered to. Peictt follows the same folder structure as a typical rails app with all of the model, view and controller code packed inside of an app folder, configuration based code placed inside a config folder and the main database file in a db folder. [Here](https://github.com/andela-tpeter/peictt_todo) is a link to a to-do app built using Peictt with the correct folder setup, it can be forked, cloned and edited to suit other purposes.
+When creating a new Peictt application, a few things need to be setup and a few rules adhered to. Peictt follows the same folder structure as a typical rails app with all of the model, view and controller code packed inside of an app folder, configuration based code placed inside a config folder and the main database file in a db folder. [Here](https://github.com/andela-tpeters/peictt_todo) is a link to a to-do app built using Peictt with the correct folder setup, it can be forked, cloned and edited to suit other purposes.
+
+### Generators
+
+Peictt has generators that help to make work flow easy
+
+#### New App
+
+Generates new folder structure for the named app with the basic files needed
+
+```ruby
+peictt new appname
+```
+
+#### New Controller
+
+Creates new controller file with the name provided
+
+```ruby
+peictt generate controller controllername
+```
+
+#### New Model
+
+Creates new model file with the name provided
+
+```ruby
+peictt generate model modelname
+```
+
+#### New Migration
+Creates new migration file with the tablename provided
+
+```ruby
+peictt generate migration tablename
+```
+
+### Tasks
+
+#### Start Server
+Runs the Server
+
+```ruby
+peictt server
+```
+
+#### Run Migrations
+Executes the migrations
+
+```ruby
+peictt migrate
+```
+
+#### Drop Tables
+
+Deletes all Database Tables
+
+```ruby
+peictt drop_tables
+```
+
+#### Reset Database
+
+Deletes all tables in the database and creates the tables
+
+```ruby
+peictt reset_db
+```
+
 
 ### Setup
 
@@ -101,6 +169,38 @@ class PagesController < Peictt::Controller
 end
 ```
 
+#### Render action
+
+The render action can be used to modify the response from the server. Default renders "text/html"
+
+To render json
+
+```ruby
+render json: {}
+```
+
+So Peictt uses the method name to find the corresponding file `*.json.haml` in the application views folder
+
+To render text
+```ruby
+render text: "This is a text"
+```
+
+To use another controller view file with the same method
+```ruby
+render controller: "controller_name"
+```
+
+To use another controller with a different view file
+```ruby
+render controller: "controller_name", action: "action_name"
+```
+
+To passing locals to the view
+```ruby
+render locals: {name: "name"}
+```
+
 ### Views
 
 View templates are mapped to controller actions and must assume the same nomenclature as their respective actions. Haml is used as the templating engine and files which are views are required to have the `.haml` file extension. Views are placed inside the `app/views` folder. A default layout file is required and must be placed inside the `app/views/layouts` folder. It is also required that this file is named `application.haml` and has a `yield` command.
@@ -115,7 +215,7 @@ Example file:
 ```
 ## Running the tests
 
-Test files are placed inside the spec folder and have been split into two sub folders, one for unit tests and the other for integration tests. You can run the tests from your command line client by typing `rspec spec`
+Test files are placed inside the spec/unit folder. You can run the tests from your command line client by typing `rspec spec`
 
 
 ## Development
@@ -126,7 +226,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/peictt. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/andela-tpeters/peictt. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
