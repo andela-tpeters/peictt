@@ -143,6 +143,8 @@ module Generators
       template "routes.rb", "#{app}/config/routes.rb", { name: app }
       template "readme.md", "#{app}/README.md", { name: app }
       copy_file "application.haml", "#{app}/app/views/layouts/application.haml"
+      copy_file "landing_controller.rb", "#{app}/app/controllers/landing_controller.rb"
+      copy_file "index.haml", "#{app}/app/views/landing/index.haml"
 
       %w(peictt setup console).each do |filename|
         file = File.join(File.dirname(__FILE__), "..", "bin", filename)

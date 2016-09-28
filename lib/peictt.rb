@@ -37,7 +37,6 @@ module Peictt
     end
 
     def self.config
-      # binding.pry
     end
 
     def self.params
