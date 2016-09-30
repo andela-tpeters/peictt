@@ -3,10 +3,15 @@ module Peictt
     class Checker
       def self.check_url(env, routes)
         routes.each do |route|
+          params = {}
           match = route.regexp.match(env["PATH_INFO"])
           if match && ((env["REQUEST_METHOD"] == route.verb) ||
             (route.verb.include? env["REQUEST_METHOD"]))
-            return route.controller.action(route.action)
+            unless route.placeholders.empty?
+              params = route.placeholders.zip(match.captures).to_h
+            end
+            # return route.controller.action(route.action)
+            return [route, params]
           end
         end
 

@@ -106,8 +106,6 @@ module Peictt
         end
       end
 
-      private
-
       def find_query
         "SELECT * FROM #{@table_name} WHERE #{@combined_array.join(' AND ')} "\
         " LIMIT 1"

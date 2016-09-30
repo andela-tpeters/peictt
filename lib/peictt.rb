@@ -27,24 +27,23 @@ require "peictt/orm/database_mapper"
 
 module Peictt
   class Application
-    @request = nil
     def call(env)
-      if env["PATH_INFO"] == "/favicon.ico"
-        return [500, {}, []]
+      if /^[(\/|)]assets\/[(css|js)]+\/([a-z_]+\.[(css|js)]+)$/.match env["PATH_INFO"]
+        return Peictt::Controller.get_asset($1)
       end
-      @request = Rack::Request.new(env)
-      get_rack_app(env).call(env)
+      @@request = Rack::Request.new(env)
+      get_rack_app(env)
     end
 
     def self.config
     end
 
     def self.params
-      @request.params
+      @@request.params
     end
 
     def self.session
-      @request.session
+      @@request.session
     end
 
     def self.routes
@@ -52,7 +51,13 @@ module Peictt
     end
 
     def get_rack_app(env)
-      Peictt::Http::Checker.check_url(env, self.class.routes.all)
+      route, params = Peictt::Http::Checker.check_url(env, self.class.routes.all)
+      @@request.params.merge! params unless params.nil?
+      if route.respond_to? :controller
+        return route.controller.action(route.action).call(env)
+      else
+        return route.call(env)
+      end
     end
   end
 end

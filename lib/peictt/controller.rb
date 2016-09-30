@@ -23,6 +23,16 @@ module Peictt
         )
         @layout = Tilt::HamlTemplate.new(file)
       end
+
+      def get_asset(filename)
+        file = ""
+        if /^[a-z_]+\.css$/.match filename
+          file = File.read File.join(APP_ROOT, "app", "assets","css", "#{filename}")
+        elsif /^[a-z_]+\.js$/.match filename
+          file = File.read File.join(APP_ROOT, "app", "assets","js", "#{filename}")
+        end
+        Rack::Response.new(file, 200, {"Content-Type"=>"text/css"})
+      end
     end
 
     def redirect_to(url)

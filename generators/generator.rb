@@ -102,7 +102,7 @@ module Generators
       Dir[File.join(APP_ROOT, "db", "migrations", "*.rb")].map do |file|
         require file
         filename = Pathname.new(file).basename.to_s.sub! /.rb/, ''
-        klass = Object.const_get filename.to_camel_case
+        klass = Object.const_get "#{filename.to_camel_case}Migration"
         { name: filename, class: klass }
       end
     end
