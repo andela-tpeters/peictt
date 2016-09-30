@@ -2,6 +2,5 @@ APP_ROOT = __dir__
 require "./config/application"
 
 use Rack::MethodOverride
-use Rack::Reloader
 
 run <%= app.to_camel_case %>::Application.new

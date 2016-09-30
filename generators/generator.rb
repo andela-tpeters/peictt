@@ -12,6 +12,8 @@ module Generators
     @dirs = %w(
       app
       bin
+      app/assets/css
+      app/assets/js
       app/controllers
       app/models
       app/views
@@ -135,16 +137,17 @@ module Generators
 
     def create_directory_files
       copy_file "application_controller.rb",
-                "#{app}/app/controllers/application_controller.rb"
+                File.join(app,"app","controllers","application_controller.rb")
 
-      template "application.tt", "#{app}/config/application.rb"
-      template "config.tt", "#{app}/config.ru"
-      copy_file "Gemfile", "#{app}/Gemfile"
-      template "routes.rb", "#{app}/config/routes.rb", { name: app }
-      template "readme.md", "#{app}/README.md", { name: app }
-      copy_file "application.haml", "#{app}/app/views/layouts/application.haml"
-      copy_file "landing_controller.rb", "#{app}/app/controllers/landing_controller.rb"
-      copy_file "index.haml", "#{app}/app/views/landing/index.haml"
+      template "application.tt", File.join(app,"config","application.rb")
+      template "config.tt", File.join(app,"config.ru")
+      copy_file "Gemfile", File.join(app, "Gemfile")
+      template "routes.rb", File.join(app,"config","routes.rb"), { name: app }
+      template "readme.md", File.join(app,"README.md"), { name: app }
+      template "application.haml", File.join(app,"app","views","layouts","application.haml"), { name: app }
+      copy_file "landing_controller.rb", File.join(app,"app","controllers","landing_controller.rb")
+      copy_file "index.haml", File.join(app,"app","views","landing","index.haml")
+      copy_file "style.css", File.join(app,"app","assets", "css","style.css")
 
       %w(peictt setup console).each do |filename|
         file = File.join(File.dirname(__FILE__), "..", "bin", filename)
