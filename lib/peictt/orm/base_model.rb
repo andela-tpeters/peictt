@@ -22,7 +22,7 @@ module Peictt
       attributes.each do |key, value|
         send("#{key}=", value)
       end
-      self.class.parse_time_to_s self
+      save
       self
     end
 
@@ -32,6 +32,10 @@ module Peictt
 
     class << self
       attr_accessor :table
+
+      def table(klass = self)
+        klass.to_s.downcase.pluralize
+      end
 
       def destroy_all
         DatabaseMapper.destroy_all to_s.to_snake_case.pluralize
@@ -50,6 +54,7 @@ module Peictt
         self.table = to_s.downcase.pluralize
         result = DatabaseMapper.find_by self, attributes
         return result if result.nil?
+
         convert_to_object result
       end
 

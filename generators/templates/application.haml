@@ -1,5 +1,8 @@
 %head
-  %title My Application
+  %title <%= config[:name].sub(/_/, "\s").capitalize %>
+  %link{href:"//fonts.googleapis.com/css?family=Raleway:100,400,300,600",rel:"stylesheet",type:"text/css"}
+  %link{rel: "stylesheet",href:"https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"}
+  %link{rel: "stylesheet",href: "/assets/css/style.css"}
 
 %body
   = yield

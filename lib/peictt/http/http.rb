@@ -37,7 +37,7 @@ module Peictt
         elsif !correct_format?(url) && @args.empty?
           raise ArgumentError.new("Route arguments are not correct")
         end
-        @regexp = Regexp.new("/#{get_url_regexp(@url)}")
+        @regexp = Regexp.new("#{get_url_regexp(@url)}$")
       end
 
       def set_controller_and_action(controller, action)
@@ -47,12 +47,14 @@ module Peictt
       end
 
       def get_url_regexp(url)
-        url_parts = url.split("/")
-        url_parts.select! { |part| !part.empty? }
-
-        regexp_parts = get_placeholders url_parts
-
-        regexp_parts.join("/")
+        if url == "/"
+          return "/"
+        else
+          url_parts = url.split("/")
+          url_parts.select! { |part| !part.empty? }
+          regexp_parts = get_placeholders url_parts
+          return regexp_parts.join("/")
+        end
       end
 
       def get_placeholders(url_parts)

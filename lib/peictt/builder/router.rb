@@ -14,6 +14,13 @@ module Peictt
         @routes
       end
 
+      def root(arg)
+        url = "/"
+        route = Peictt::Http::GET.new url, to: arg
+        @routes << route
+        route
+      end
+
       def method_missing(name, url, args = {})
         verb = name.to_s.upcase
         verb_class = Object.const_get "Peictt::Http::#{verb}"
@@ -30,6 +37,7 @@ module Peictt
         end
         false
       end
+
 
       def respond_to_missing?(type, include_private = false)
         super
