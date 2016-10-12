@@ -7,32 +7,36 @@ module Peictt
 
     class << self
       attr_accessor :layout
+    end
 
-      def action(action_name)
-        -> (_env) { new.dispatch(action_name) }
-      end
+    def self.action(action_name)
+      -> (_env) { new.dispatch(action_name) }
+    end
 
-      def layout(layout_name = nil)
-        view_name = layout_name || DEFAULT_LAYOUT
-        file = File.join(
-          APP_ROOT,
-          "app",
-          "views",
-          "layouts",
-          "#{view_name}.haml"
-        )
-        @layout = Tilt::HamlTemplate.new(file)
-      end
+    def self.layout(layout_name = nil)
+      view_name = layout_name || DEFAULT_LAYOUT
+      file = File.join(
+        APP_ROOT,
+        "app",
+        "views",
+        "layouts",
+        "#{view_name}.haml"
+      )
+      @layout = Tilt::HamlTemplate.new(file)
+    end
 
-      def get_asset(filename)
-        file = ""
-        if /^[a-z_]+\.css$/.match filename
-          file = File.read File.join(APP_ROOT, "app", "assets","css", "#{filename}")
-        elsif /^[a-z_]+\.js$/.match filename
-          file = File.read File.join(APP_ROOT, "app", "assets","js", "#{filename}")
-        end
-        Rack::Response.new(file, 200, {"Content-Type"=>"text/css"})
+    def self.get_asset(filename)
+      file = ""
+      if /^[a-z_]+\.css$/ =~ filename
+        file = asset_file("css", filename)
+      elsif /^[a-z_]+\.js$/ =~ filename
+        file = asset_file("js", filename)
       end
+      Rack::Response.new(file, 200, "Content-Type" => "text/css")
+    end
+
+    def self.asset_file(type, filename)
+      File.read File.join(APP_ROOT, "app", "assets", type, filename.to_s)
     end
 
     def redirect_to(url)

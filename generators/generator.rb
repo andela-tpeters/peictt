@@ -153,6 +153,7 @@ module Generators
         file = File.join(File.dirname(__FILE__), "..", "bin", filename)
         copy_file file, "#{app}/bin/#{filename}"
       end
+      chmod("#{app}/bin/peictt", 0755)
     end
   end
 end

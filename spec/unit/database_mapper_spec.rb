@@ -11,7 +11,7 @@ describe Peictt::DatabaseMapper do
       db_mapper = Peictt::DatabaseMapper.new @model
       expect(db_mapper).to be_instance_of Peictt::DatabaseMapper
       expect(db_mapper.instance_variable_get(:@action)).to eq :create
-      expect(db_mapper.instance_variable_get(:@table_name)).to eq "tests"
+      expect(Peictt::DatabaseMapper.table).to eq "tests"
     end
 
     context 'update @action' do
