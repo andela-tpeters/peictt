@@ -1,5 +1,3 @@
-require "tilt/haml"
-
 module Peictt
   class Controller
     DEFAULT_LAYOUT = "application".freeze
