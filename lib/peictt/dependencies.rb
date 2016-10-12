@@ -1,7 +1,5 @@
-require "pry"
-require "haml"
 require "puma"
-require "json"
+require "tilt/haml"
 require "active_support/inflector"
 require "peictt/controller"
 require "peictt/utils"
