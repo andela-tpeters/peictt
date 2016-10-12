@@ -10,7 +10,6 @@ module Peictt
             unless route.placeholders.empty?
               params = route.placeholders.zip(match.captures).to_h
             end
-            # return route.controller.action(route.action)
             return [route, params]
           end
         end

@@ -33,9 +33,9 @@ module Peictt
       def process_options(options)
         @status = options[:status]
         options.keys.each do |key|
-          if MODIFIERS.include?(key) && key != :headers
+          if (MODIFIERS.include?(key)) && (key != :headers)
             send(key)
-          elsif MODIFIERS.include?(key) && key == :headers
+          elsif (MODIFIERS.include?(key)) && (key == :headers)
             add_headers options[:headers]
           end
         end
@@ -46,14 +46,18 @@ module Peictt
           process_options args[1]
         elsif (args.size == 1) && (args[0].is_a? Hash)
           process_options args[0]
-        elsif (args.size == 1) && ((args[0].is_a? String) ||
-            (args[0].is_a? Symbol))
+        elsif (args.size == 1) &&
+              ((args[0].is_a? String) || (args[0].is_a? Symbol))
           status
         elsif (args.size > 1) && (!args[1].is_a? Hash)
-          raise ArgumentError.new "First for render argument must be a view"\
-            "name as a Symbol or"\
-            "string; Second argument for render must be type Hash"
+          raise ArgumentError.new error_msg
         end
+      end
+
+      def error_msg
+        "First for render argument must be a view"\
+        "name as a Symbol or"\
+        "string; Second argument for render must be type Hash"
       end
     end
   end

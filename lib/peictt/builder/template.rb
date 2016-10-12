@@ -25,41 +25,9 @@ module Peictt
 
       private
 
-      def process_args(arg)
-        if (arg.size > 1) && (arg[1].is_a? Hash)
-
-          get_format arg[1].keys
-          build_body arg[0], arg[1]
-          get_locals arg[1]
-
-        elsif (arg.size == 1) && (arg[0].is_a? Hash)
-
-          get_format arg[0].keys
-          build_body @action, arg[0]
-          get_locals arg[0]
-
-        elsif (arg.size == 1) && (!arg[0].is_a? Hash)
-
-          @format = :html
-          build_body @action
-          get_locals
-
-        else
-          raise ArgumentError.new "First for render argument must be a view"\
-            " name as a Symbol or"\
-            " string; Second argument for render must be type Hash"
-        end
-      end
-
-      def get_format(keys)
-        format = keys.select { |key| FORMAT.include? key }
-        raise "2 application types given...expected 1" if format.size > 1
-        @format = (format[0] unless format.empty?) || :html
-      end
-
       def get_locals(options = {})
         @locals = options[:locals] || {}
-        @locals.merge! options[:json] if json?
+        @locals.merge!(options[:json]) if json?
       end
 
       def build_body(view_name, options = {})
@@ -72,6 +40,49 @@ module Peictt
           build_template_from_parts(options)
         end
       end
+
+      def get_format(keys)
+        format = keys.select { |key| FORMAT.include? key }
+        raise "2 application types given...expected 1" if format.size > 1
+        @format = (format[0] unless format.empty?) || :html
+      end
+
+      def properties_from_array_args(arg)
+        get_format arg[1].keys
+        build_body(arg[0], arg[1])
+        get_locals arg[1]
+      end
+
+      def properties_from_hash_arg(arg)
+        get_format arg[0].keys
+        build_body @action, arg[0]
+        get_locals arg[0]
+      end
+
+      def properties_from_string_arg(arg)
+        @format = :html
+        build_body @action
+        get_locals
+      end
+
+      def arg_error
+        "First for render argument must be a view"\
+        " name as a Symbol or"\
+        " string; Second argument for render must be type Hash"
+      end
+
+      def process_args(arg)
+        if (arg.size > 1) && (arg[1].is_a? Hash)
+          properties_from_array_args(arg)
+        elsif (arg.size == 1) && (arg[0].is_a? Hash)
+          properties_from_hash_arg(arg)
+        elsif (arg.size == 1) && (!arg[0].is_a? Hash)
+          properties_from_string_arg(arg)
+        else
+          raise ArgumentError.new arg_error
+        end
+      end
+
 
       def build_template_from_parts(parts)
         if parts[:controller]
