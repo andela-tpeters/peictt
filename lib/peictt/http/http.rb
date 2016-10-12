@@ -4,10 +4,10 @@ module Peictt
       attr_reader :url, :placeholders, :regexp, :controller, :action, :verb
       CONTROLLER_ACTION_REGEXP = /^([^#]+)#([^#]+)$/
       INVALID_ARG_ERROR = "Second argument for routes must either be a"\
-                          "string or hash type"
-      INVALID_ROUTE_ARG = "Route arguments are not correct"
+                          "string or hash type".freeze
+      INVALID_ROUTE_ARG = "Route arguments are not correct".freeze
       INVALID_URL_FORMAT = "correct format for 2nd argument for routes"\
-                          "is `controller#action`"
+                          "is `controller#action`".freeze
 
       def initialize(*args)
         @verb = "GET"
@@ -59,7 +59,7 @@ module Peictt
         url_parts = url.split("/")
         url_parts.select! { |part| !part.empty? }
         regexp_parts = get_placeholders url_parts
-        return regexp_parts.join("/")
+        regexp_parts.join("/")
       end
 
       def get_placeholders(url_parts)

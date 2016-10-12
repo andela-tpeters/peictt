@@ -16,13 +16,12 @@ module Peictt
       table_properties << "created_at DATETIME"
       table_properties << "updated_at DATETIME"
     end
-    
+
     private
 
     def table_properties
       @table_properties ||= []
     end
-
 
     def migrate
       Database.execute_query create_table_query

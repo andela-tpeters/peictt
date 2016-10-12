@@ -17,7 +17,7 @@ module Peictt
       result
     end
 
-    def self.primary_key(value = PRIMARY_KEY)
+    def self.primary_key(value = false)
       @result << PRIMARY_KEY if value
     end
 

@@ -1,5 +1,9 @@
 module Peictt
   class BaseModel
+    class << self
+      attr_accessor :table
+    end
+
     def initialize(attributes = {})
       self.class.table = self.class.to_s.downcase.pluralize
       self.class.set_methods
@@ -11,7 +15,7 @@ module Peictt
 
     def save
       if @id
-        self.class.parse_time_to_s self
+        self.class.parse_time_to_string self
         return DatabaseMapper.new(self, :update).save
       else
         return DatabaseMapper.new(self).save
@@ -30,16 +34,8 @@ module Peictt
       DatabaseMapper.destroy self
     end
 
-    class << self
-      attr_accessor :table
-    end
-
-    def self.table(klass = self)
-      klass.to_s.downcase.pluralize
-    end
-
     def self.destroy_all
-      DatabaseMapper.destroy_all to_s.to_snake_case.pluralize
+      DatabaseMapper.destroy_all(table)
     end
 
     def self.all
@@ -53,7 +49,7 @@ module Peictt
 
     def self.find_by(attributes)
       self.table = to_s.downcase.pluralize
-      result = DatabaseMapper.find_by self, attributes
+      result = DatabaseMapper.find_by(self, attributes)
       return result if result.nil?
 
       convert_to_object result
@@ -65,23 +61,27 @@ module Peictt
       find_by attributes
     end
 
-    def self.set_methods
-      make_methods columns
+    private_class_method
+
+    def self.table(klass = self)
+      klass.to_s.downcase.pluralize
     end
 
-    def self.parse_time_to_s(model)
+    def self.set_methods
+      make_methods get_columns_from_table
+    end
+
+    def self.parse_time_to_string(model)
       model.updated_at = Time.now.to_s if model.respond_to? :updated_at
       model.created_at = model.created_at.to_s if model.respond_to? :created_at
     end
 
-    private_class_method
-
-    def self.parse_to_time(model)
+    def self.parse_string_to_time(model)
       model.created_at = model.created_at.to_time unless model.created_at.nil?
       model.updated_at = model.updated_at.to_time unless model.updated_at.nil?
     end
 
-    def self.columns
+    def self.get_columns_from_table
       Database.connect.table_info(table).
         map { |column| column["name"] }
     end
@@ -93,9 +93,9 @@ module Peictt
     end
 
     def self.convert_to_object(result)
-      key_pair = columns.zip(result).to_h
-      item = new key_pair
-      parse_to_time item
+      attributes = get_columns_from_table.zip(result).to_h
+      item = new attributes
+      parse_string_to_time item
       item
     end
   end

@@ -59,7 +59,7 @@ module Peictt
         get_locals arg[0]
       end
 
-      def properties_from_string_arg(arg)
+      def properties_from_string_arg(_arg)
         @format = :html
         build_body @action
         get_locals
@@ -82,7 +82,6 @@ module Peictt
           raise ArgumentError.new arg_error
         end
       end
-
 
       def build_template_from_parts(parts)
         if parts[:controller]
